@@ -31,6 +31,6 @@ const bookSchema = new mongoose.Schema(
 const BookModel = mongoose.model('book', bookSchema);
 
 // Another way of creating index after creating schema
-await BookModel.createIndexes({ genre: 1, author: 1, title: 'text' });
+// await BookModel.createIndexes({ genre: 1, author: 1, title: 'text' });
 
 export { BookModel };
