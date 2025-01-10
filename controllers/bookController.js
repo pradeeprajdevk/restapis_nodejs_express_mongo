@@ -60,9 +60,45 @@ export const GetBooks = async (req, res) => {
     const skip = (page - 1) * limit;
 
     const books = await BookModel.find(query).limit(limit).skip(skip);
+
+    // Add hypermedia links to each book
+    const booksWithLinks = books.map((book) => ({
+      ...book.toJSON(),
+      links: [
+        {
+          rel: 'self',
+          href: `${req.protocol}://${req.get('host')}/api/books/${book._id}`,
+          method: 'GET',
+        },
+        {
+          rel: 'update',
+          href: `${req.protocol}://${req.get('host')}/api/books/${book._id}`,
+          method: 'PUT',
+        },
+        {
+          rel: 'delete',
+          href: `${req.protocol}://${req.get('host')}/api/books/${book._id}`,
+          method: 'DELETE',
+        },
+      ],
+    }));
+
+    // res.status(200).json({
+    //   success: true,
+    //   data: books,
+    // });
+
     res.status(200).json({
       success: true,
-      data: books,
+      count: booksWithLinks.length,
+      data: booksWithLinks,
+      links: [
+        {
+          rel: 'create',
+          href: `${req.protocol}://${req.get('host')}/api/books`,
+          method: 'POST',
+        },
+      ],
     });
   } catch (err) {
     console.error(err);
