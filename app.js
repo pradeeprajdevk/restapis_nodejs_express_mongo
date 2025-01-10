@@ -9,7 +9,7 @@ import { bookRouter } from './routes/index.js';
 // Load environment variables from .env file
 dotenv.config();
 
-const app = express();
+export const app = express();
 
 // Middleware to parse JSON
 app.use(express.json()); // Parsing JSON payloads
@@ -17,6 +17,13 @@ app.use(bodyParser.json());
 
 // Use CORS middleware
 app.use(cors());
+
+app.get('/', (req, res) => {
+  res.send('Working...');
+});
+
+// Mount routes
+app.use('/api', bookRouter);
 
 // connect to MongoDB
 mongoose
@@ -28,13 +35,6 @@ mongoose
   .catch((err) => console.error(`Error connection to MongoDB ${err}`));
 
 const PORT = process.env.PORT || 4000;
-
-app.get('/', (req, res) => {
-  res.send('Working...');
-});
-
-// Mount routes
-app.use('/api', bookRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is listening on PORT ${PORT}`);
